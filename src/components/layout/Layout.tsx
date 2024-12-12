@@ -1,6 +1,6 @@
 import React from 'react';
-import { TopNav } from './TopNav';
-import { SideNav } from './SideNav';
+import TopNav from '../navigation/TopNav';
+import SideNav from '../navigation/SideNav';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,16 +8,15 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-dark">
+    <div className="min-h-screen bg-dark text-slate-100">
+      <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-dark to-accent/5 pointer-events-none" />
       <TopNav />
-      <div className="pt-16 flex">
-        <SideNav />
-        <main className="flex-1 pl-64">
-          <div className="p-6">
-            {children}
-          </div>
-        </main>
-      </div>
+      <SideNav />
+      <main className="pl-64 pt-16 relative">
+        <div className="p-6">
+          {children}
+        </div>
+      </main>
     </div>
   );
 };

@@ -1,15 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
 import Layout from './components/layout/Layout';
 
 function App() {
   return (
     <Router>
       <Layout>
-        <div className="card">
-          <h1 className="text-2xl font-bold mb-4 text-gradient">Welcome to RecruitPro</h1>
-          <p className="text-gray-400">Your modern recruitment management solution.</p>
-        </div>
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
       </Layout>
     </Router>
   );
