@@ -1,6 +1,6 @@
 import React from 'react';
-import TopNav from '../navigation/TopNav';
-import SideNav from '../navigation/SideNav';
+import { TopNav } from './TopNav';
+import { SideNav } from './SideNav';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-dark">
       <TopNav />
       <div className="pt-16 flex">
         <SideNav />

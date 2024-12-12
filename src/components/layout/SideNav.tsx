@@ -1,15 +1,15 @@
 import { 
   Home, Search, Users, Archive, Clock, Briefcase, Calendar, BarChart2, 
-  HelpCircle, MessageSquare, Settings 
+  HelpCircle, MessageSquare, Settings, LucideIcon 
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
-const NavItem = ({ to, icon: Icon, children }: { to: string; icon: any; children: React.ReactNode }) => (
+const NavItem = ({ to, icon: Icon, children }: { to: string; icon: LucideIcon; children: React.ReactNode }) => (
   <NavLink
     to={to}
     className={({ isActive }) => `
-      flex items-center space-x-3 px-4 py-2.5 rounded-lg
-      ${isActive ? 'bg-[hsl(210,90%,50%)] text-white' : 'text-gray-600 hover:bg-gray-100'}
+      flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors
+      ${isActive ? 'bg-primary text-dark-darker' : 'text-gray-400 hover:bg-dark-lighter hover:text-primary'}
     `}
   >
     <Icon size={20} />
@@ -26,7 +26,7 @@ const NavGroup = ({ title, children }: { title?: string; children: React.ReactNo
 
 export const SideNav = () => {
   return (
-    <nav className="fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-gray-200 overflow-y-auto">
+    <nav className="fixed top-16 left-0 bottom-0 w-64 bg-dark-darker border-r border-gray-800 overflow-y-auto">
       <div className="py-4 flex flex-col h-full">
         <NavGroup>
           <NavItem to="/" icon={Home}>Home</NavItem>
