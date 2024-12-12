@@ -1,23 +1,13 @@
-import * as React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import TopNav from './components/layout/TopNav'
-import SideNav from './components/layout/SideNav'
-import Home from './pages/Home'
+import React from 'react';
+import Layout from './components/layout/Layout';
+import Dashboard from './pages/Dashboard';
 
-const App: React.FC = () => {
+function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <TopNav />
-      <div className="flex">
-        <SideNav />
-        <main className="flex-1 p-6">
-          <Routes>
-            <Route path="/" element={<Home />} />
-          </Routes>
-        </main>
-      </div>
-    </div>
-  )
+    <Layout>
+      <Dashboard />
+    </Layout>
+  );
 }
 
-export default App 
+export default App; 
