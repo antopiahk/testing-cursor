@@ -14,7 +14,9 @@ import {
   Zap,
   Sparkles,
   Palette,
-  Gauge
+  Gauge,
+  PieChartIcon,
+  TableIcon
 } from "lucide-react";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
@@ -23,7 +25,16 @@ import { Badge } from "./components/ui/badge";
 import { Slider } from "./components/ui/slider";
 import { useTheme } from "./components/theme-provider";
 import { useState } from "react";
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell, Legend } from "recharts";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./components/ui/table";
 
 const chartData = [
   { month: "Jan", value: 1200 },
@@ -32,6 +43,20 @@ const chartData = [
   { month: "Apr", value: 1400 },
   { month: "May", value: 2100 },
   { month: "Jun", value: 1800 },
+];
+
+const pieData = [
+  { name: 'Mobile', value: 400, color: 'hsl(var(--primary))' },
+  { name: 'Desktop', value: 300, color: 'hsl(var(--secondary))' },
+  { name: 'Tablet', value: 200, color: 'hsl(var(--accent))' },
+  { name: 'Other', value: 100, color: 'hsl(var(--muted-foreground))' },
+];
+
+const tableData = [
+  { id: 1, name: "John Doe", email: "john@example.com", status: "Active", role: "Admin" },
+  { id: 2, name: "Jane Smith", email: "jane@example.com", status: "Pending", role: "User" },
+  { id: 3, name: "Bob Johnson", email: "bob@example.com", status: "Inactive", role: "User" },
+  { id: 4, name: "Alice Brown", email: "alice@example.com", status: "Active", role: "Editor" },
 ];
 
 function App() {
@@ -44,7 +69,7 @@ function App() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-12">
           <div className="flex items-center gap-2">
             <Sparkles className="h-8 w-8 text-primary" />
             <h1 className="text-4xl font-bold tracking-tight">
@@ -62,26 +87,28 @@ function App() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
-          {/* Analytics Card - Spans 2 columns */}
-          <Card className="md:col-span-2 lg:col-span-2 hover:shadow-primary/5">
-            <CardHeader>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 auto-rows-min">
+          {/* Analytics Card */}
+          <Card className="lg:col-span-2 hover:shadow-primary/5">
+            <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-primary/10 rounded-xl">
-                    <BarChart3 className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-primary/10 rounded-xl">
+                    <BarChart3 className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle>Analytics Overview</CardTitle>
+                  <div>
+                    <CardTitle className="text-xl">Analytics Overview</CardTitle>
+                    <CardDescription className="text-base mt-1.5">Your performance this month</CardDescription>
+                  </div>
                 </div>
-                <Badge variant="secondary" className="gap-1">
-                  <Activity className="h-3 w-3" />
+                <Badge variant="secondary" className="gap-1.5 px-3 py-1 text-sm">
+                  <Activity className="h-3.5 w-3.5" />
                   Live Data
                 </Badge>
               </div>
-              <CardDescription>Your performance this month</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
+            <CardContent className="pt-6">
+              <div className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData}>
                     <XAxis dataKey="month" />
@@ -90,7 +117,8 @@ function App() {
                       contentStyle={{ 
                         backgroundColor: 'hsl(var(--background))',
                         border: '2px solid hsl(var(--border))',
-                        borderRadius: '0.75rem'
+                        borderRadius: '0.75rem',
+                        padding: '12px'
                       }}
                     />
                     <Area
@@ -99,20 +127,21 @@ function App() {
                       stroke="hsl(var(--primary))"
                       fill="hsl(var(--primary))"
                       fillOpacity={0.2}
+                      strokeWidth={2}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-between">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="gap-1 text-primary border-primary">
-                  <Zap className="h-3 w-3" />
+            <CardFooter className="flex justify-between pt-4">
+              <div className="flex items-center gap-3">
+                <Badge variant="outline" className="gap-1.5 text-primary border-primary px-3 py-1 text-sm">
+                  <Zap className="h-3.5 w-3.5" />
                   +12.3%
                 </Badge>
                 <span className="text-sm text-muted-foreground">from last month</span>
               </div>
-              <Button variant="ghost" size="sm" className="gap-1">
+              <Button variant="ghost" size="sm" className="gap-2 text-base">
                 View Details <ChevronRight className="h-4 w-4" />
               </Button>
             </CardFooter>
@@ -120,23 +149,25 @@ function App() {
 
           {/* Settings Card */}
           <Card className="hover:shadow-primary/5">
-            <CardHeader>
+            <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-secondary/10 rounded-xl">
-                    <Settings2 className="h-5 w-5 text-secondary" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-secondary/10 rounded-xl">
+                    <Settings2 className="h-6 w-6 text-secondary" />
                   </div>
-                  <CardTitle>Settings</CardTitle>
+                  <div>
+                    <CardTitle className="text-xl">Settings</CardTitle>
+                    <CardDescription className="text-base mt-1.5">Customize your preferences</CardDescription>
+                  </div>
                 </div>
               </div>
-              <CardDescription>Customize your preferences</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-8 pt-6">
               <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Theme</Label>
-                  <p className="text-sm text-muted-foreground">
-                    <Palette className="h-3 w-3 inline mr-1" />
+                <div className="space-y-1.5">
+                  <Label className="text-base">Theme</Label>
+                  <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    <Palette className="h-4 w-4" />
                     Appearance
                   </p>
                 </div>
@@ -147,10 +178,10 @@ function App() {
                   }
                 />
               </div>
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  Volume
-                  <Gauge className="h-3 w-3" />
+              <div className="space-y-3">
+                <Label className="text-base flex items-center gap-2">
+                  Volume Control
+                  <Gauge className="h-4 w-4" />
                 </Label>
                 <Slider
                   value={[volume]}
@@ -166,13 +197,16 @@ function App() {
 
           {/* Social Engagement Card */}
           <Card className="hover:shadow-primary/5">
-            <CardHeader>
+            <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-accent/10 rounded-xl">
-                    <Share2 className="h-5 w-5 text-accent" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-accent/10 rounded-xl">
+                    <Share2 className="h-6 w-6 text-accent" />
                   </div>
-                  <CardTitle>Social Engagement</CardTitle>
+                  <div>
+                    <CardTitle className="text-xl">Social Engagement</CardTitle>
+                    <CardDescription className="text-base mt-1.5">Share and interact</CardDescription>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -181,21 +215,21 @@ function App() {
                     onClick={() => setIsBookmarked(!isBookmarked)}
                   >
                     <BookMarked
-                      className={`h-4 w-4 ${isBookmarked ? "fill-primary text-primary" : ""}`}
+                      className={`h-5 w-5 ${isBookmarked ? "fill-primary text-primary" : ""}`}
                     />
                   </Button>
                   <Button variant="ghost" size="icon">
-                    <Share2 className="h-4 w-4" />
+                    <Share2 className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="aspect-video rounded-xl bg-gradient-to-br from-primary/50 to-accent/50 flex items-center justify-center">
-                <span className="text-white text-lg font-medium">Featured Content</span>
+            <CardContent className="pt-6">
+              <div className="aspect-video rounded-xl bg-gradient-to-br from-primary/50 to-accent/50 flex items-center justify-center p-8">
+                <span className="text-2xl font-medium text-white text-center">Featured Content</span>
               </div>
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter className="flex justify-between pt-4">
               <Button
                 variant="ghost"
                 size="sm"
@@ -203,59 +237,61 @@ function App() {
                   setIsLiked(!isLiked);
                   setLikes(isLiked ? likes - 1 : likes + 1);
                 }}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-base"
               >
                 <Heart
-                  className={`h-4 w-4 transition-colors ${isLiked ? "fill-red-500 text-red-500" : ""}`}
+                  className={`h-5 w-5 transition-colors ${isLiked ? "fill-red-500 text-red-500" : ""}`}
                 />
                 <span>{likes}</span>
               </Button>
               <div className="flex gap-2">
-                <Badge variant="secondary">Trending</Badge>
-                <Badge variant="outline">New</Badge>
+                <Badge variant="secondary" className="px-3 py-1">Trending</Badge>
+                <Badge variant="outline" className="px-3 py-1">New</Badge>
               </div>
             </CardFooter>
           </Card>
 
           {/* Form Controls Card */}
-          <Card className="md:col-span-2 lg:col-span-2 hover:shadow-primary/5">
-            <CardHeader>
+          <Card className="lg:col-span-2 hover:shadow-primary/5">
+            <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-secondary/10 rounded-xl">
-                    <Bell className="h-5 w-5 text-secondary" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 bg-secondary/10 rounded-xl">
+                    <Bell className="h-6 w-6 text-secondary" />
                   </div>
-                  <CardTitle>Form Controls</CardTitle>
+                  <div>
+                    <CardTitle className="text-xl">Form Controls</CardTitle>
+                    <CardDescription className="text-base mt-1.5">Interactive form elements</CardDescription>
+                  </div>
                 </div>
               </div>
-              <CardDescription>Interactive form elements</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input type="email" id="email" placeholder="Enter your email" />
+            <CardContent className="pt-6">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-base">Email</Label>
+                    <Input type="email" id="email" placeholder="Enter your email" className="text-base" />
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-3">
                     <Switch id="notifications" />
-                    <Label htmlFor="notifications">Enable notifications</Label>
+                    <Label htmlFor="notifications" className="text-base">Enable notifications</Label>
                   </div>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input type="text" id="name" placeholder="John Doe" />
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-base">Full Name</Label>
+                    <Input type="text" id="name" placeholder="John Doe" className="text-base" />
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-3">
                     <Switch id="marketing" />
-                    <Label htmlFor="marketing">Receive updates</Label>
+                    <Label htmlFor="marketing" className="text-base">Receive updates</Label>
                   </div>
                 </div>
               </div>
             </CardContent>
-            <CardFooter>
-              <Button className="ml-auto gap-2">
+            <CardFooter className="pt-4">
+              <Button className="ml-auto gap-2 text-base px-6">
                 Save Changes
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -264,28 +300,31 @@ function App() {
 
           {/* Button Showcase Card */}
           <Card className="hover:shadow-primary/5">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-primary/10 rounded-xl">
-                  <Sparkles className="h-5 w-5 text-primary" />
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-primary/10 rounded-xl">
+                  <Sparkles className="h-6 w-6 text-primary" />
                 </div>
-                <CardTitle>Button Styles</CardTitle>
+                <div>
+                  <CardTitle className="text-xl">Button Styles</CardTitle>
+                  <CardDescription className="text-base mt-1.5">Various button variations</CardDescription>
+                </div>
               </div>
-              <CardDescription>Various button variations</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-wrap gap-2">
-                <Button>Default</Button>
-                <Button variant="secondary">Secondary</Button>
-                <Button variant="destructive">Destructive</Button>
+            <CardContent className="space-y-6 pt-6">
+              <div className="flex flex-wrap gap-3">
+                <Button size="lg">Default</Button>
+                <Button variant="secondary" size="lg">Secondary</Button>
+                <Button variant="destructive" size="lg">Destructive</Button>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <Button variant="outline">Outline</Button>
-                <Button variant="ghost">Ghost</Button>
-                <Button variant="link">Link</Button>
+              <div className="flex flex-wrap gap-3">
+                <Button variant="outline" size="lg">Outline</Button>
+                <Button variant="ghost" size="lg">Ghost</Button>
+                <Button variant="link" size="lg">Link</Button>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 <Button size="sm">Small</Button>
+                <Button size="default">Default</Button>
                 <Button size="lg">Large</Button>
               </div>
             </CardContent>
@@ -293,26 +332,120 @@ function App() {
 
           {/* Badge Showcase Card */}
           <Card className="hover:shadow-primary/5">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-accent/10 rounded-xl">
-                  <Sparkles className="h-5 w-5 text-accent" />
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-accent/10 rounded-xl">
+                  <Sparkles className="h-6 w-6 text-accent" />
                 </div>
-                <CardTitle>Badges</CardTitle>
+                <div>
+                  <CardTitle className="text-xl">Badges</CardTitle>
+                  <CardDescription className="text-base mt-1.5">Status indicators and labels</CardDescription>
+                </div>
               </div>
-              <CardDescription>Status indicators and labels</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                <Badge>Default</Badge>
-                <Badge variant="secondary">Secondary</Badge>
-                <Badge variant="destructive">Destructive</Badge>
-                <Badge variant="outline">Outline</Badge>
-                <Badge className="bg-primary hover:bg-primary/90">Custom</Badge>
-                <Badge variant="outline" className="border-secondary text-secondary">
+            <CardContent className="pt-6">
+              <div className="flex flex-wrap gap-3">
+                <Badge className="px-3 py-1 text-sm">Default</Badge>
+                <Badge variant="secondary" className="px-3 py-1 text-sm">Secondary</Badge>
+                <Badge variant="destructive" className="px-3 py-1 text-sm">Destructive</Badge>
+                <Badge variant="outline" className="px-3 py-1 text-sm">Outline</Badge>
+                <Badge className="bg-primary hover:bg-primary/90 px-3 py-1 text-sm">Custom</Badge>
+                <Badge variant="outline" className="border-secondary text-secondary px-3 py-1 text-sm">
                   Success
                 </Badge>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Pie Chart Card */}
+          <Card className="hover:shadow-primary/5">
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-primary/10 rounded-xl">
+                  <PieChartIcon className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">Device Distribution</CardTitle>
+                  <CardDescription className="text-base mt-1.5">User device analytics</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Legend 
+                      verticalAlign="bottom" 
+                      height={36}
+                      formatter={(value) => <span className="text-sm">{value}</span>}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Data Table Card */}
+          <Card className="hover:shadow-primary/5">
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-secondary/10 rounded-xl">
+                  <TableIcon className="h-6 w-6 text-secondary" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">User Data</CardTitle>
+                  <CardDescription className="text-base mt-1.5">Interactive data table</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <Table>
+                <TableCaption>A list of recent users.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">ID</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Role</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {tableData.map((row) => (
+                    <TableRow key={row.id}>
+                      <TableCell className="font-medium">{row.id}</TableCell>
+                      <TableCell>{row.name}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant={
+                            row.status === "Active" ? "default" : 
+                            row.status === "Pending" ? "secondary" : 
+                            "outline"
+                          }
+                          className="px-2 py-0.5"
+                        >
+                          {row.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">{row.role}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </div>
